@@ -29,7 +29,7 @@ class Dictionary:
                     self.words.append(line)
         else:
             self.words = self.lines
-        print('Loaded!')
+        print('Dictionary loaded!')
 
 
 
