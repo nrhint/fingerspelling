@@ -10,6 +10,6 @@ Make the program track:
 Display the results on a graph
 Score based on the number of words gotten in a row
 allow the user to pick exactly how many letters to be in each word
-use the similataries between the missed words and try to make a training module that will train those commonly missed words and things
-make an option to randomly mispell words (Find a dictionary of common mispellings and add that to the list)
+use the similarities between the missed words and try to make a training module that will train those commonly missed words and things
+make an option to randomly misspell words (Find a dictionary of common misspellings and add that to the list)
 speed (maybe add a function that common letter combos are faster than the rest)

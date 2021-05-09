@@ -1,18 +1,13 @@
 ##Nathan Hinton
-##Main program for the fingerspelling trining
+##Main program for the fingerspelling trining !!!DO NOT ADD UNTIL THE SAFE MARKER!!!
 
 import tkinter as tk
 from time import time, sleep
 from random import choice, randint
-from typing import ValuesView
+from PIL import Image, ImageTk
+from util.addImageset import generateNewImages
 
-v = False
-if v:print('loading dictionary...')
-from data.Dictionary import Dictionary
-
-d = Dictionary('filteredDictionary.txt', v)
-score_int = 0
-
+v = True
 if v:print('loading the window...')
 
 #Start the window
@@ -22,110 +17,20 @@ speed_var = tk.IntVar()
 word_input = tk.StringVar()
 word_length_var = tk.IntVar()
 
-#window.wm_attributes()
-hello_frame = tk.Frame(master = window)
-image_frame = tk.Frame(master = window)
-replay_frame = tk.Frame(master = window)
-input_frame = tk.Frame(master = window)
-score_frame = tk.Frame(master = window)
-adjustment_frame = tk.Frame(master = window)
-other = tk.Frame(master = window)
+from data.defaultImages import *
 
-hello_frame.pack()
-image_frame.pack()
-replay_frame.pack()
-input_frame.pack()
-score_frame.pack()
-adjustment_frame.pack()
-other.pack()
+add = False
+if add:
+    for x in range(0, 3):
+        generateNewImages()
 
-##Data that is tracked: {word:[attempts, times_watched, [start_time, end_time], speed]}
-dataTracking = {}
 
-def checkWordWorkaround(null):
-    checkWord(word)
+from data.images3 import *
+from data.images2 import *
+from data.images1 import *
 
-word = ''
-def generateNewWord():
-    global word
-    global dataTracking
-    word = choice(d.words)
-    if len(word) >= min_length:
-        dataTracking.update({word:[0, 0, [time()], 0]})
-        play_word(word)
-    else:
-        generateNewWord()
 
-def analyze():
-    from util import analyze
 
-def checkWord(word):
-    global score_int
-    global dataTracking
-    text = word_input.get()
-    word_input.set('')
-    if v:print(word, text)
-    tmp_data = dataTracking[word]
-    tmp_data[0] += 1
-    tmp_data.append(speed)
-    if text == word:
-        tmp_data[2].append(time())
-        dataTracking.update({word:tmp_data})
-        score_int += 1
-        score.configure(text = '%s'%score_int)
-        score.text = 'Score: %s'%score_int
-        display_image.configure(image = smileRender)
-        display_image.image = smileRender
-        window.update()
-        sleep(1)
-        display_image.configure(image = blankRender)
-        display_image.image = blankRender
-        window.update()
-        sleep(0.25)
-        generateNewWord()
-    else:
-        score_int -= 1
-        score.configure(text = '%s'%score_int)
-        score.text = 'Score: %s'%score_int
-        window.update()
-
-def applySettings():
-    global speed
-    global min_length
-    speed = int(speed_var.get())
-    min_length = int(word_length_var.get())
-    print(min_length, speed)
-
-def printStats():
-    print(dataTracking)
-
-def saveStats():
-    from pickle import dump
-    name = input('enter your name: ')
-    dump(dataTracking, open('%s.sta'%name, 'wb'))
-    print('stats saved!')
-
-def loadStats():
-    global dataTracking
-    from pickle import load
-    name = input('enter your name: ')
-    try:
-        tmp = load(open('%s.sta'%name, 'rb'))
-        values = []
-        for item in tmp:
-            values.append(item)
-        tmp.pop(values[-1])
-        dataTracking.update(tmp)
-        print('Data loaded!')
-    except FileNotFoundError:
-        print('Profile file not found. Not loading data...')
-
-if v:print('Loading the images...')
-from data.images import *
-
-if v:print('finishing up...')
-
-display_image = tk.Label(master = image_frame, image = F1render)
 
 def play_word(word):
     global dataTracking
@@ -149,6 +54,8 @@ def play_word(word):
                 double = True
             else:
                 double = False
+            if r == 0:
+                print("ERROR")
             if r == 1:
                 if letter == 'a':
                     if double:
@@ -571,8 +478,335 @@ def play_word(word):
                     window.update()
                 else:
                     print("!!!ERROR!!!")
+            elif r == 3:
+                if letter == 'a':
+                    if double:
+                        display_image.configure(image = A32render)
+                        display_image.image = A32render
+                    else:
+                        display_image.configure(image = A3render)
+                        display_image.image = A3render
+                    window.update()
+                elif letter == 'b':
+                    if double:
+                        display_image.configure(image = B32render)
+                        display_image.image = B32render
+                    else:
+                        display_image.configure(image = B3render)
+                        display_image.image = B3render
+                    window.update()
+                elif letter == 'c':
+                    if double:
+                        display_image.configure(image = C32render)
+                        display_image.image = C32render
+                    else:
+                        display_image.configure(image = C3render)
+                        display_image.image = C3render
+                    window.update()
+                elif letter == 'd':
+                    if double:
+                        display_image.configure(image = D32render)
+                        display_image.image = D32render
+                    else:
+                        display_image.configure(image = D3render)
+                        display_image.image =D3render
+                    window.update()
+                elif letter == 'e':
+                    if double:
+                        display_image.configure(image = E32render)
+                        display_image.image = E32render
+                    else:
+                        display_image.configure(image = E3render)
+                        display_image.image = E3render
+                    window.update()
+                elif letter == 'f':
+                    if double:
+                        display_image.configure(image = F32render)
+                        display_image.image = F32render
+                    else:
+                        display_image.configure(image = F3render)
+                        display_image.image = F3render
+                    window.update()
+                elif letter == 'g':
+                    if double:
+                        display_image.configure(image = G32render)
+                        display_image.image = G32render
+                    else:
+                        display_image.configure(image = G3render)
+                        display_image.image = G3render
+                    window.update()
+                elif letter == 'h':
+                    if double:
+                        display_image.configure(image = H32render)
+                        display_image.image = H32render
+                    else:
+                        display_image.configure(image = H3render)
+                        display_image.image = H3render
+                    window.update()
+                elif letter == 'i':
+                    if double:
+                        display_image.configure(image = I32render)
+                        display_image.image = I32render
+                    else:
+                        display_image.configure(image = I3render)
+                        display_image.image = I3render
+                    window.update()
+                elif letter == 'j':
+                    if double:
+                        display_image.configure(image = J32render)
+                        display_image.image = J32render
+                    else:
+                        display_image.configure(image = J3render)
+                        display_image.image = J3render
+                    window.update()
+                elif letter == 'k':
+                    if double:
+                        display_image.configure(image = K32render)
+                        display_image.image = K32render
+                    else:
+                        display_image.configure(image = K3render)
+                        display_image.image = K3render
+                    window.update()
+                elif letter == 'l':
+                    if double:
+                        display_image.configure(image = L32render)
+                        display_image.image = L32render
+                    else:
+                        display_image.configure(image = L3render)
+                        display_image.image = L3render
+                    window.update()
+                elif letter == 'm':
+                    if double:
+                        display_image.configure(image = M32render)
+                        display_image.image = M32render
+                    else:
+                        display_image.configure(image = M3render)
+                        display_image.image = M3render
+                    window.update()
+                elif letter == 'n':
+                    if double:
+                        display_image.configure(image = N32render)
+                        display_image.image = N32render
+                    else:
+                        display_image.configure(image = N3render)
+                        display_image.image = N3render
+                    window.update()
+                elif letter == 'o':
+                    if double:
+                        display_image.configure(image = O32render)
+                        display_image.image = O32render
+                    else:
+                        display_image.configure(image = O3render)
+                        display_image.image = O3render
+                    window.update()
+                elif letter == 'p':
+                    if double:
+                        display_image.configure(image = P32render)
+                        display_image.image = P32render
+                    else:
+                        display_image.configure(image = P3render)
+                        display_image.image = P3render
+                    window.update()
+                elif letter == 'q':
+                    if double:
+                        display_image.configure(image = Q32render)
+                        display_image.image = Q32render
+                    else:
+                        display_image.configure(image = Q3render)
+                        display_image.image = Q3render
+                    window.update()
+                elif letter == 'r':
+                    if double:
+                        display_image.configure(image = R32render)
+                        display_image.image = R32render
+                    else:
+                        display_image.configure(image = R3render)
+                        display_image.image = R3render
+                    window.update()
+                elif letter == 's':
+                    if double:
+                        display_image.configure(image = S32render)
+                        display_image.image = S32render
+                    else:
+                        display_image.configure(image = S3render)
+                        display_image.image = S3render
+                    window.update()
+                elif letter == 't':
+                    if double:
+                        display_image.configure(image = T32render)
+                        display_image.image = T32render
+                    else:
+                        display_image.configure(image = T3render)
+                        display_image.image = T3render
+                    window.update()
+                elif letter == 'u':
+                    if double:
+                        display_image.configure(image = U32render)
+                        display_image.image = U32render
+                    else:
+                        display_image.configure(image = U3render)
+                        display_image.image = U3render
+                    window.update()
+                elif letter == 'v':
+                    if double:
+                        display_image.configure(image = V32render)
+                        display_image.image = V32render
+                    else:
+                        display_image.configure(image = V3render)
+                        display_image.image = V3render
+                    window.update()
+                elif letter == 'w':
+                    if double:
+                        display_image.configure(image = W32render)
+                        display_image.image = W32render
+                    else:
+                        display_image.configure(image = W3render)
+                        display_image.image = W3render
+                    window.update()
+                elif letter == 'x':
+                    if double:
+                        display_image.configure(image = X32render)
+                        display_image.image = X32render
+                    else:
+                        display_image.configure(image = X3render)
+                        display_image.image = X3render
+                    window.update()
+                elif letter == 'y':
+                    if double:
+                        display_image.configure(image = Y32render)
+                        display_image.image = Y32render
+                    else:
+                        display_image.configure(image = Y3render)
+                        display_image.image = Y3render
+                    window.update()
+                elif letter == 'z':
+                    if double:
+                        display_image.configure(image = Z32render)
+                        display_image.image = Z32render
+                    else:
+                        display_image.configure(image = Z3render)
+                        display_image.image = Z3render
+                    window.update()
+                else:
+                    print("!!!ERROR!!!")
     display_image.configure(image = blankRender)
     display_image.image = blankRender
+
+
+
+##########SAFE#######################
+if v:print('loading dictionary...')
+from data.Dictionary import Dictionary
+
+d = Dictionary('filteredDictionary.txt', v)
+score_int = 0
+
+#window.wm_attributes()
+hello_frame = tk.Frame(master = window)
+image_frame = tk.Frame(master = window)
+replay_frame = tk.Frame(master = window)
+input_frame = tk.Frame(master = window)
+score_frame = tk.Frame(master = window)
+adjustment_frame = tk.Frame(master = window)
+other = tk.Frame(master = window)
+
+hello_frame.pack()
+image_frame.pack()
+replay_frame.pack()
+input_frame.pack()
+score_frame.pack()
+adjustment_frame.pack()
+other.pack()
+
+##Data that is tracked: {word:[attempts, times_watched, [start_time, end_time], speed]}
+dataTracking = {}
+
+def checkWordWorkaround(null):
+    checkWord(word)
+
+word = ''
+def generateNewWord():
+    global word
+    global dataTracking
+    word = choice(d.words)
+    if len(word) >= min_length:
+        dataTracking.update({word:[0, 0, [time()], 0]})
+        play_word(word)
+    else:
+        generateNewWord()
+
+def analyze():
+    from util import analyze
+
+def checkWord(word):
+    global score_int
+    global dataTracking
+    text = word_input.get()
+    word_input.set('')
+    if v:print(word, text)
+    tmp_data = dataTracking[word]
+    tmp_data[0] += 1
+    tmp_data.append(speed)
+    if text == word:
+        tmp_data[2].append(time())
+        dataTracking.update({word:tmp_data})
+        score_int += 1
+        score.configure(text = '%s'%score_int)
+        score.text = 'Score: %s'%score_int
+        display_image.configure(image = smileRender)
+        display_image.image = smileRender
+        window.update()
+        sleep(1)
+        display_image.configure(image = blankRender)
+        display_image.image = blankRender
+        window.update()
+        sleep(0.25)
+        generateNewWord()
+    else:
+        score_int -= 1
+        score.configure(text = '%s'%score_int)
+        score.text = 'Score: %s'%score_int
+        window.update()
+
+def applySettings():
+    global speed
+    global min_length
+    speed = int(speed_var.get())
+    min_length = int(word_length_var.get())
+    print(min_length, speed)
+
+def printStats():
+    print(dataTracking)
+
+def saveStats(name = False):
+    from pickle import dump
+    if not name:
+        name = input('enter your name: ')
+    tmpData = dataTracking
+    tmpData.pop(word)
+    dump(tmpData, open('%s.sta'%name, 'wb'))
+    print('stats saved!')
+
+def loadStats():
+    global dataTracking
+    from pickle import load
+    name = input('enter your name: ')
+    try:
+        tmp = load(open('%s.sta'%name, 'rb'))
+        dataTracking.update(tmp)
+        print('Data loaded!')
+    except FileNotFoundError:
+        print('Profile file not found. Not loading data...')
+
+blank_load = Image.open('images/blank.jpg')
+blank_load = blank_load.resize((450, 450))
+blankRender = ImageTk.PhotoImage(blank_load)
+
+display_image = tk.Label(master = image_frame, image = blankRender)
+
+display_image.configure(image = blankRender)
+display_image.image = blankRender
+
 
 hello = tk.Label(master = hello_frame, text = 'Welcome to fingerspelling training!')
 check_word = tk.Button(master = input_frame, text = 'check', command = lambda: checkWord(word))
@@ -587,6 +821,10 @@ see_stuff = tk.Button(master = other, text = 'Stats', command = printStats)
 save_data = tk.Button(master = other, text = 'Save stats to file', command = saveStats)
 load_data = tk.Button(master = other, text = 'Load stats from file', command = loadStats)
 analyze_data = tk.Button(master = other, text = 'Analyze data', command = analyze)
+
+# if v:print('waiting for images to finish loading...')
+# loadImages.join()
+if v:print('finishing up...')
 
 hello.pack()
 display_image.pack()
@@ -608,10 +846,11 @@ speed_var.set(180)
 min_length = 4
 word_length_var.set(3)
 
+if v:print('starting!')
+
 generateNewWord()
 #print('Secret word: %s'%word)
 
-if v:print('starting!')
 
 window.bind("<Return>", checkWordWorkaround)
 window.bind('<space>', play_word)
