@@ -2,3 +2,5 @@
 */*2021*
 *.pk
 */__pycache__
+*/images*.py
+*/*pre*
