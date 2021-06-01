@@ -6,6 +6,7 @@ from time import time, sleep
 from random import choice
 import threading
 from util.addImageset import generateNewImages
+from util import updateManager
 
 v = True
 if v:print('loading the window...')
@@ -19,13 +20,21 @@ word_length_var = tk.IntVar()
 
 from data.defaultImages import *
 
-for x in range(0, 4):
+if v:print('checking for cache files...')
+gen = True
+x = 0
+while gen:
+    x += 1
     try:
         open('imageSet%s.pk'%(x+1), 'r')
         open('./data/images%s.py'%(x+1), 'r')
     except FileNotFoundError:
-        generateNewImages(x+1)
-        print('generated %s'%(x+1))
+        check = generateNewImages(x+1)
+        if check == 'Fail':
+            gen = False
+            if v:print('found %s sets of images...'%x)
+        else:
+            print('generated %s'%(x+1))
 
 from data.images4 import *
 from data.images3 import *
@@ -195,6 +204,10 @@ speed = 180#int(input('speed: '))#Speed will be measured in chars per min
 speed_var.set(180)
 min_length = 4
 word_length_var.set(3)
+
+if v:print('starting background update check...')
+update_thread = threading.Thread(target=updateManager.runUpdateManager)
+update_thread.start()
 
 if v:print('starting!')
 
