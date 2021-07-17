@@ -4,7 +4,6 @@
 import tkinter as tk
 from time import time, sleep
 from random import choice
-import threading
 from util.addImageset import generateNewImages
 
 v = True
@@ -137,7 +136,7 @@ def saveStats(name = False):
     if not name:
         name = input('enter your name: ')
     tmpData = dataTracking
-    tmpData.pop(word)
+    # tmpData.pop(word)
     dump(tmpData, open('%s.sta'%name, 'wb'))
     print('stats saved!')
 

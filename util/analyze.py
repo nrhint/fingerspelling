@@ -1,7 +1,6 @@
 ##Nathan Hinton
 ##This program will take the data gathered by the program and will sample it for usage
 
-from os import times
 from pickle import load
 name = input('enter your name: ')
 try:
@@ -38,7 +37,7 @@ print('analyzed! Printing suggestions:')
 if times_watched <= words * 1.20:#if you have to watch again 20 percent of the time:
     print('Increase speed. You did not have to rewatch the words many times!')
 elif total_tries <= words * 1.10:#if you were right 9 of 10 times
-    print('Increase speed. You were often right (19 of 20 times to be exact)')
+    print('Increase speed. You were often right (%95 to be exact)')
 #suggest slowing down
 if times_watched > words *1.40:#If you had to re watch about 30 percent of the time:
     print('Slow down. You had to rewatch the word many times.')
