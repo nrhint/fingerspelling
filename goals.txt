@@ -1,0 +1,12 @@
+The goal of this branch is to make the program more efficient. Currently there are several design things that I would like to change. 
+
+1) This includes having the images stored in a different places and downloading them from a different place to make the initial package smaller. 
+    a) Revamp the updating portion to be able to download specific things
+
+2) Make the program more efficient. I was watching and when the program plays the word it pops the CPU core to 100% I want to make this smaller if I can.
+    a) Use wait flags?
+
+3) Add the stuff to make the program optimize automatically as you use it.
+    a) Add a scoring system to each word. Increase communication between threads with queues
+
+4) Update the dictionary

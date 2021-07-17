@@ -1,6 +1,7 @@
 from time import time
 from random import randint
 
+from data.images4 import *
 from data.images3 import *
 from data.images2 import *
 from data.images1 import *
@@ -13,7 +14,8 @@ def play_word(word, speed, display_image, window, v):
     index = 0
     lastLetter = ''
     letter = word[index]
-    r = randint(1, 3)
+    r = randint(1, 4)
+    looped = 0#Using for testing
     while index < len(word):
         if time() >= startTime+interval*(index+1):
             index += 1
@@ -22,7 +24,8 @@ def play_word(word, speed, display_image, window, v):
                 break
             letter = word[index]
             if v:print(lastLetter, letter)
-        else:
+        # else:
+            looped += 1
             if lastLetter == letter:
                 double = True
             else:
@@ -877,26 +880,7 @@ def play_word(word, speed, display_image, window, v):
 
 
 
-
-
-
-
     display_image.configure(image = blankRender)
     display_image.image = blankRender
     window.update()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    print('looped %s times'%looped)

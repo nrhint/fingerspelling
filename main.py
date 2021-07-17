@@ -5,9 +5,17 @@ import tkinter as tk
 from time import time, sleep
 from random import choice
 from util.addImageset import generateNewImages
+from threading import Thread
+from queue import Queue
 
 v = True
 if v:print('loading the window...')
+
+# if v:print('starting analysis thread...')
+# data = Queue()
+# if v:print('Finished loading thread.')
+
+score = 100 #The score will change the programs attributes
 
 #Start the window
 window = tk.Tk()
@@ -26,10 +34,10 @@ for x in range(0, 4):
         generateNewImages(x+1)
         print('generated %s'%(x+1))
 
-from data.images4 import *
-from data.images3 import *
-from data.images2 import *
-from data.images1 import *
+# from data.images4 import *
+# from data.images3 import *
+# from data.images2 import *
+# from data.images1 import *
 
 from util.playWord import play_word
 
@@ -84,17 +92,19 @@ def generateNewWord():
     else:
         generateNewWord()
 
-def analyze():
-    from util import analyze
-
 def checkWord(word):
     global score_int
+    global score
     global dataTracking
     text = word_input.get()
     if text == '':
+        score += 1
+        speed_var.set(score * 1.8)
         dataTracking[word][1] += 1
+        applySettings()
         play_word_workaround(word)
     else:
+        score -= 0.5
         word_input.set('')
         if v:print(word, text)
         tmp_data = dataTracking[word]
@@ -169,7 +179,7 @@ apply_settings = tk.Button(master = adjustment_frame, text = 'Apply Settings', c
 see_stuff = tk.Button(master = other, text = 'Stats', command = printStats)
 save_data = tk.Button(master = other, text = 'Save stats to file', command = saveStats)
 load_data = tk.Button(master = other, text = 'Load stats from file', command = loadStats)
-analyze_data = tk.Button(master = other, text = 'Analyze data', command = analyze)
+# analyze_data = tk.Button(master = other, text = 'Analyze data', command = analyze)
 
 # if v:print('waiting for images to finish loading...')
 # loadImages.join()
@@ -188,7 +198,7 @@ apply_settings.pack(side = tk.RIGHT)
 see_stuff.pack(side = tk.LEFT)
 save_data.pack(side = tk.LEFT)
 load_data.pack(side = tk.LEFT)
-analyze_data.pack(side = tk.LEFT)
+# analyze_data.pack(side = tk.LEFT)
 
 speed = 180#int(input('speed: '))#Speed will be measured in chars per min
 speed_var.set(180)
