@@ -5,3 +5,5 @@
 */images*.py
 */*pre*
 *db*
+*.cfg
+!config.cfg

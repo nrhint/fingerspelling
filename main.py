@@ -5,21 +5,49 @@ import tkinter as tk
 from time import time, sleep
 from random import choice
 from util.addImageset import generateNewImages
-from threading import Thread
-from queue import Queue
+
+profile = input('Enter name or press enter to use default profile: ')
+
+# load from file the configuration:
+try:
+    with open('%s.cfg'%profile, 'r') as f:
+        file_data = f.read()
+        print('Welcome %s'%profile)
+except FileNotFoundError:
+    print('using default profile')
+    with open('config.cfg', 'r') as f:
+        file_data = f.read()
+
+data = []
+for line in file_data.split('\n'):
+    if line == '' or line[0] == '#':
+        pass
+    else:
+        data.append(line)
+
+game_score = float(data[0]) #The score will change the programs attributes
+increase_rate = float(data[1])
+decrease_rate = float(data[2])
+score_int = int(data[3])
+
+def save_data():
+    file = ''
+    file += str(game_score) + '\n'
+    file += str(increase_rate) + '\n'
+    file += str(decrease_rate) + '\n'
+    file += str(score_int)
+    with open('%s.cfg'%profile, 'w') as f:
+        f.write(file)
 
 v = True
 if v:print('loading the window...')
 
-# if v:print('starting analysis thread...')
-# data = Queue()
-# if v:print('Finished loading thread.')
-
-score = 100 #The score will change the programs attributes
+show_letters = False
 
 #Start the window
 window = tk.Tk()
 window.geometry("500x650")
+window.title('Fingerspelling training')
 speed_var = tk.IntVar()
 word_input = tk.StringVar()
 word_length_var = tk.IntVar()
@@ -34,15 +62,8 @@ for x in range(0, 4):
         generateNewImages(x+1)
         print('generated %s'%(x+1))
 
-# from data.images4 import *
-# from data.images3 import *
-# from data.images2 import *
-# from data.images1 import *
-
 from util.playWord import play_word
 
-
-##########SAFE#######################
 if v:print('loading dictionary...')
 from data.Dictionary import Dictionary
 
@@ -66,54 +87,41 @@ score_frame.pack()
 adjustment_frame.pack()
 other.pack()
 
-##Data that is tracked: {word:[attempts, times_watched, [start_time, end_time], speed]}
-dataTracking = {}
+word = ''
 
 def checkWordWorkaround(null):
     checkWord(word)
 
 def play_word_workaround(word):
-    global dataTracking
-    dataTracking[word][1] += 1
-    play_word(word, speed, display_image, window, v)
-    # print('starting thread')
-    # t = threading.Thread(target=play_word, args=(word, speed, display_image, window, v, ))
-    # t.start()
+    global game_score
+    game_score -= decrease_rate
+    speed = game_score
+    if v:print(speed)
+    play_word(word, speed, display_image, window, show_letters)
 
-word = ''
 def generateNewWord():
     global word
-    global dataTracking
+    save_data()
     word = choice(d.words)
     if len(word) >= min_length:
-        dataTracking.update({word:[0, 0, [time()], 0]})
-        dataTracking[word][1] += 1
         play_word_workaround(word)
     else:
         generateNewWord()
 
 def checkWord(word):
     global score_int
-    global score
-    global dataTracking
+    global game_score
+    global speed
     text = word_input.get()
     if text == '':
-        score += 1
-        speed_var.set(score * 1.8)
-        dataTracking[word][1] += 1
-        applySettings()
+        speed_var.set(game_score * 1.8)
         play_word_workaround(word)
     else:
-        score -= 0.5
         word_input.set('')
         if v:print(word, text)
-        tmp_data = dataTracking[word]
-        tmp_data[0] += 1
-        tmp_data.append(speed)
         if text == word:
-            tmp_data[2].append(time())
-            dataTracking.update({word:tmp_data})
             score_int += 1
+            game_score += increase_rate+decrease_rate #Every time the word is played it will go down so this will nullify the next one
             score.configure(text = '%s'%score_int)
             score.text = 'Score: %s'%score_int
             display_image.configure(image = smileRender)
@@ -127,39 +135,10 @@ def checkWord(word):
             generateNewWord()
         else:
             score_int -= 1
+            game_score -= decrease_rate
             score.configure(text = '%s'%score_int)
             score.text = 'Score: %s'%score_int
             window.update()
-
-def applySettings():
-    global speed
-    global min_length
-    speed = int(speed_var.get())
-    min_length = int(word_length_var.get())
-    print(min_length, speed)
-
-def printStats():
-    print(dataTracking)
-
-def saveStats(name = False):
-    from pickle import dump
-    if not name:
-        name = input('enter your name: ')
-    tmpData = dataTracking
-    # tmpData.pop(word)
-    dump(tmpData, open('%s.sta'%name, 'wb'))
-    print('stats saved!')
-
-def loadStats():
-    global dataTracking
-    from pickle import load
-    name = input('enter your name: ')
-    try:
-        tmp = load(open('%s.sta'%name, 'rb'))
-        dataTracking.update(tmp)
-        print('Data loaded!')
-    except FileNotFoundError:
-        print('Profile file not found. Not loading data...')
 
 display_image = tk.Label(master = image_frame, image = blankRender)
 
@@ -173,16 +152,7 @@ new_word = tk.Button(master = replay_frame, text = 'new word', command = lambda:
 replay_word = tk.Button(master = replay_frame, text = 'play', command = lambda: play_word_workaround(word))
 entry = tk.Entry(master = input_frame, textvariable = word_input, fg="yellow", bg="blue", width=15)
 score = tk.Label(master = score_frame, text = 'Score: %s'%score_int)
-speed_setting = tk.Entry(master = adjustment_frame, textvariable = speed_var, fg = 'yellow', bg = 'blue', width = 5)
-length_setting = tk.Entry(master = adjustment_frame, textvariable = word_length_var, fg = 'yellow', bg = 'blue', width = 5)
-apply_settings = tk.Button(master = adjustment_frame, text = 'Apply Settings', command = applySettings)
-see_stuff = tk.Button(master = other, text = 'Stats', command = printStats)
-save_data = tk.Button(master = other, text = 'Save stats to file', command = saveStats)
-load_data = tk.Button(master = other, text = 'Load stats from file', command = loadStats)
-# analyze_data = tk.Button(master = other, text = 'Analyze data', command = analyze)
 
-# if v:print('waiting for images to finish loading...')
-# loadImages.join()
 if v:print('finishing up...')
 
 hello.pack()
@@ -192,12 +162,6 @@ replay_word.pack(side = tk.RIGHT)
 entry.pack(side = tk.LEFT)
 check_word.pack(side = tk.RIGHT)
 score.pack()
-length_setting.pack(side = tk.LEFT)
-speed_setting.pack(side = tk.LEFT)
-apply_settings.pack(side = tk.RIGHT)
-see_stuff.pack(side = tk.LEFT)
-save_data.pack(side = tk.LEFT)
-load_data.pack(side = tk.LEFT)
 # analyze_data.pack(side = tk.LEFT)
 
 speed = 180#int(input('speed: '))#Speed will be measured in chars per min
