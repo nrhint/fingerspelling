@@ -5,7 +5,10 @@ The goal of this branch is to make the program more efficient. Currently there a
 
 2) Make the program more efficient. I was watching and when the program plays the word it pops the CPU core to 100% I want to make this smaller if I can.
     a) Use wait flags?
+    b) Transition to pygame for better support during fast words
 
+
+FINISHED:
 3) Add the stuff to make the program optimize automatically as you use it.
     a) Add a scoring system to each word. Increase communication between threads with queues
 

@@ -7,3 +7,4 @@
 *db*
 *.cfg
 !config.cfg
+*-old*

@@ -1,13 +1,15 @@
+##Nathan Hinton
+##This file is for playing the letters on the screen. 
+
+########BUGS:########
+##If the first and last letter are the same it will play the first letter as the second in a serries. This is caused by the way it checks indexes of the word so that it treats it as if it was a circle so the last two letters are basically nxt to each other.
+
 from time import time
 from random import randint
 
-from data.images4 import *
-from data.images3 import *
-from data.images2 import *
-from data.images1 import *
-from data.defaultImages import *
+from util.loadImages import *
 
-def play_word(word, speed, display_image, window, v):
+def play(word, speed, display_image, window, v):
     if v:print('playing word')
     startTime = time()
     interval = 60/speed
@@ -15,6 +17,7 @@ def play_word(word, speed, display_image, window, v):
     lastLetter = ''
     letter = word[index]
     r = randint(1, 4)
+    if v:print(r)
     if v:looped = 0#Using for testing
     while index < len(word):
         if time() >= startTime+interval*(index+1):

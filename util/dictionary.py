@@ -17,7 +17,7 @@ class Dictionary:
             self.words = []
             for line in self.lines:
                 word = True
-                if self.v:print(self.lines.index(line))
+                if self.v:print('processing line #%s'%self.lines.index(line))
                 if line[0] == '#':
                     word = False
                 else:
@@ -30,11 +30,3 @@ class Dictionary:
         else:
             self.words = self.lines
         print('Dictionary loaded!')
-
-
-
-# #Reconstruct dictionary file:
-# text = ''
-# for word in d.words:
-#     text += '%s\n'%word
-# open('filteredDictionary.txt', 'w').write(text)
