@@ -67,7 +67,6 @@ affect
 afford
 afraid
 African
-African-American
 after
 afternoon
 again
@@ -85,7 +84,6 @@ ah
 ahead
 aid
 aide
-AIDS
 aim
 air
 aircraft
@@ -713,7 +711,6 @@ deliver
 delivery
 demand
 democracy
-Democrat
 democratic
 demonstrate
 demonstration
@@ -798,7 +795,6 @@ diversity
 divide
 division
 divorce
-DNA
 do
 doctor
 document
@@ -876,7 +872,7 @@ eliminate
 elite
 else
 elsewhere
-e-mail
+email
 embrace
 emerge
 emergency
@@ -1559,7 +1555,6 @@ locate
 location
 lock
 long
-long-term
 look
 loose
 lose
@@ -1668,7 +1663,6 @@ mission
 mistake
 mix
 mixture
-mm-hmm
 mode
 model
 moderate
@@ -2457,7 +2451,6 @@ smooth
 snap
 snow
 so
-so-called
 soccer
 social
 society

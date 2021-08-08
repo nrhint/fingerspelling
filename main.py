@@ -3,9 +3,11 @@
 ##This main program should mostly be an empty shell that allows other files to do the background work.
 
 import pygame
-from time import time
+from time import time, sleep
+from threading import Thread
 from util.dictionary import Dictionary
 from util.playWord import play
+from util.entry import InputBox
 from random import choice
 
 class Game:
@@ -54,9 +56,13 @@ class Game:
         #Image data:
         self.blank = pygame.image.load('Images/blank.jpg')#Takes 0.17815
         self.blank = pygame.transform.scale(self.blank, (self.short, self.short))#takes 0.00352
+        print(self.short)
 
         #Dictionary:
-        self.d = Dictionary(self.dictionary_path, self.v)
+        self.d = Dictionary(self.dictionary_path, False)
+
+        #Setup the entry box
+        self.entry = InputBox(550, 200, 50, 100, pygame)
 
         self.run()
 
@@ -65,7 +71,9 @@ class Game:
         file += str(self.play_speed) + '\n'
         file += str(self.increase_rate) + '\n'
         file += str(self.decrease_rate) + '\n'
-        file += str(self.score_int)
+        file += str(self.score_int) + '\n'
+        file += str(self.dictionary_path)
+
         with open('%s.cfg'%self.profile, 'w') as f:
             f.write(file)
 
@@ -76,15 +84,28 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-            self.screen.blit(self.blank, (self.imagex, 0))
+                if event.type == pygame.KEYUP:
+                    print('key lifted')
+                    if event.key == pygame.K_p:
+                        self.state = 'play_word'
+                self.entry.handle_event(event)
+
             if self.state == 'choose_new_word':
                 self.word = choice(self.d.words)
                 self.state = 'play_word'
             elif self.state == 'play_word':
-                play(self.word, self.play_speed, self.v)
+                processThread = Thread(target=play, args=(self.word.lower(), self.play_speed, self.screen, self.imagex, self.v))  # <- note extra ','
+                processThread.start()
+
+                # play(self.word, self.play_speed, self.screen, self.imagex, self.v)
+                self.state = 'wait_for_input'
+            elif self.state == 'wait_for_input':
+                sleep(0.05)
             else:
                 print("ERROR: State = %s"%self.state)
                 running = False
+            # self.entry.update()
+            self.entry.draw(self.screen)
             pygame.display.flip()
         pygame.quit()
         self.save_data()
