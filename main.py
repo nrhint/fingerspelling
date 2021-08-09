@@ -41,6 +41,7 @@ class Game:
         else:
             self.short = self.width-50
         self.imagex = (self.width-self.short)/2
+        pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('Fingerspelling')
         self.screen.fill(self.background_colour)
@@ -62,7 +63,7 @@ class Game:
         self.d = Dictionary(self.dictionary_path, False)
 
         #Setup the entry box
-        self.entry = InputBox(550, 200, 50, 100, pygame)
+        self.entry = InputBox(200, 550, 100, 50, pygame)
 
         self.run()
 
@@ -88,7 +89,7 @@ class Game:
                     print('key lifted')
                     if event.key == pygame.K_p:
                         self.state = 'play_word'
-                self.entry.handle_event(event)
+                word = self.entry.handle_event(event)
 
             if self.state == 'choose_new_word':
                 self.word = choice(self.d.words)
@@ -100,6 +101,10 @@ class Game:
                 # play(self.word, self.play_speed, self.screen, self.imagex, self.v)
                 self.state = 'wait_for_input'
             elif self.state == 'wait_for_input':
+                if word != None:
+                    print(word, self.word)
+                    if word == self.word:
+                        self.state = 'choose_new_word'
                 sleep(0.05)
             else:
                 print("ERROR: State = %s"%self.state)

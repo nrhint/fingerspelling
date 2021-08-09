@@ -9,11 +9,11 @@ class InputBox:
         self.pg = pg
         self.COLOR_INACTIVE = pg.Color('lightskyblue3')
         self.COLOR_ACTIVE = pg.Color('dodgerblue2')
-        # self.FONT = pg.font.Font(None, 32)
+        self.FONT = pg.font.Font(None, 32)
         self.rect = self.pg.Rect(x, y, w, h)
         self.color = self.COLOR_INACTIVE
         self.text = text
-        # self.txt_surface = self.FONT.render(text, True, self.color)
+        self.txt_surface = self.FONT.render(text, True, self.color)
         self.active = False
 
     def handle_event(self, event):
@@ -30,18 +30,23 @@ class InputBox:
             if self.active:
                 if event.key == self.pg.K_RETURN:
                     print(self.text)
-                    self.text = ''
+                    word = self.text
+                    self.reset()
+                    return word
                 elif event.key == self.pg.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
                     self.text += event.unicode
                 # Re-render the text.
                 self.txt_surface = self.FONT.render(self.text, True, self.color)
+    def reset(self):
+        self.text = ''
+        self.txt_surface = self.FONT.render(self.text, True, self.color)
 
-    # def update(self):
+    def update(self):
         # Resize the box if the text is too long.
-        #width = max(200, self.txt_surface.get_width()+10)
-        #self.rect.w = width
+        width = max(200, self.txt_surface.get_width()+10)
+        self.rect.w = width
 
     def draw(self, screen):
         # Blit the text.
