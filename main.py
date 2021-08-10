@@ -15,6 +15,7 @@ from threading import Thread
 from util.dictionary import Dictionary
 from util.playWord import play
 from util.entry import InputBox
+from util.score import Score
 from random import choice
 
 class Game:
@@ -47,6 +48,7 @@ class Game:
             self.short = self.height-50
         else:
             self.short = self.width-50
+
         self.imagex = (self.width-self.short)/2
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -62,8 +64,8 @@ class Game:
         self.dictionary_path = str(data[4])
         
         #Image data:
-        self.blank = pygame.image.load('Images/blank.jpg')#Takes 0.17815
-        self.blank = pygame.transform.scale(self.blank, (self.short, self.short))#takes 0.00352
+        self.smile = pygame.image.load('Images/smile.jpg')#Takes 0.17815
+        self.smile = pygame.transform.scale(self.smile, (self.short, self.short))#takes 0.00352
 
         #Dictionary:
         self.d = Dictionary(self.dictionary_path, False)
@@ -71,7 +73,15 @@ class Game:
         #Setup the entry box
         if self.v:print(self.width, self.height)
         if self.v:print((self.width/2)-50, h-50, 100, 50)
-        self.entry = InputBox((self.width/2)-100, h-50, 100, 50, pygame, self.background_colour)
+        self.entry = InputBox((self.width/2)-100, h-50, 96, 50, pygame, self.background_colour, False)
+
+        #Setup the score:
+        if self.v:print('starting the score counter...')
+        self.scoreCount = Score(self.width, self.height, pygame, str(self.score_int), self.background_colour, False)#Last is the debug var
+
+        #Start the screen updating thread:
+        # screen_update_thread = Thread(target=self.updateScreen, args=(self, ))
+        # screen_update_thread.start()
 
         self.run()
 
@@ -99,28 +109,43 @@ class Game:
                 self.word = choice(self.d.words).lower()
                 self.state = 'play_word'
             elif self.state == 'play_word':
-                processThread = Thread(target=play, args=(self.word.lower(), self.play_speed, self.screen, self.imagex, False))#Last of verbose
-                processThread.start()
-
-                # play(self.word, self.play_speed, self.screen, self.imagex, self.v)
+                self.play_word()
                 self.state = 'wait_for_input'
             elif self.state == 'wait_for_input':
                 if word != None:
                     if self.v:print(word, self.word)
-                    if word == self.word:
-                        self.state = 'choose_new_word'
+                    if word == self.word:#The input was correct:
+                        self.play_speed += self.increase_rate
+                        self.scoreCount.add(self.screen)
+                        self.state = 'victory_screen'
                     elif word == '':
-                        self.state = 'play_word'
+                        self.play_word()
+                        sleep(0.1)
+                    else:
+                        self.play_speed -= self.decrease_rate
+                        self.scoreCount.subtract(self.screen)
                 sleep(0.05)
+            elif self.state == 'victory_screen':
+                self.screen.blit(self.smile, (self.imagex, 0))
+                pygame.display.flip()
+                sleep(1)
             else:
                 print("ERROR: State = %s"%self.state)
                 running = False
-
             self.entry.update()
             self.entry.draw(self.screen)
+            self.scoreCount.draw(self.screen)
             pygame.display.flip()
         pygame.quit()
         self.save_data()
+
+    # def updateScreen(self):
+    #     sleep(0.5)
+    #     self.updateScreen()
+
+    def play_word(self):
+        processThread = Thread(target=play, args=(self.word.lower(), self.play_speed, self.screen, self.imagex, False))#Last of verbose
+        processThread.start()
 
 
 
