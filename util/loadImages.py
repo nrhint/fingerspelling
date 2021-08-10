@@ -4,7 +4,8 @@
 import pygame
 from os import listdir
 
-size = 550
+with open('size', 'r') as s:
+    size = int(s.read())
 
 files = listdir('Images')
 
@@ -13,9 +14,23 @@ image_set_count = (len(files) - 2) / 52
 alpha = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
 
-if not image_set_count.is_integer():
-    print("RECOVERABLE ERROR: Wrong number of images in the images folder. This may cause unintended errors or not all the images to be used!")
-    image_set_count = int(image_set_count)
+print("Starting to loading images")
+image_set_count = int(image_set_count)
+
+with open('data/images.py', 'w') as f:
+    f.write(
+        """##Nathan Hinton
+##This file should not be edited as it has information that if moved will make the program not function
+#1
+
+from threading import Thread
+
+def run(imageSets):
+imageSets = []
+
+                
+"""
+    )
 
 new_data = True
 while new_data:
@@ -25,23 +40,10 @@ while new_data:
             if int(lines[2][1]) == image_set_count+1:
                 new_data = False
     except FileNotFoundError:
-        print('RECOVERABLE ERROR: images file not found!!!')
-        print('Recreating the file outline...')
-        with open('data/images.py', 'w') as f:
-            f.write(
-                """##Nathan Hinton
-##This file should not be edited as it has information that if moved will make the program not function
-#1
-
-def run():
-    imageSets = []
-    
-                        
-"""
-            )
+        print('ERROR: images file not found!!!')
     else:
         if new_data:
-            print('New images found or old ones deleted. Regenerating the images file...')
+            # print('New images found or old ones deleted. Regenerating the images file...')
             number = int(lines[2][1])
             data = '''##Nathan Hinton
 # This file was generated from loadImages.py
@@ -70,22 +72,24 @@ def run(imageSets):
                 im.write(str(int(lines[2][1])+1))
             with open('data/images.py', 'r+') as im:
                 length = len(im.read())
-                im.seek(length - 20)
+                im.seek(length - 34)
                 im.write("""
-    
-    print('loading image set %i...')
+    print('loading image set %s...')
     import data.images%s
-    imageSets = data.images%s.run(imageSets)
-    return imageSets"""%(number, number, number))
+    t%s = Thread(target=data.images%s.run, args=(imageSets, ))
+    t%s.start()
+    t1.join()
+    return imageSets"""%(number, number, number, number, number))
 
 from time import time
 start = time()
 import data.images
-images = data.images.run()
+imageSets = []
+images = data.images.run(imageSets)
 blankRender = pygame.image.load('Images/blank.jpg')
 blankRender = pygame.transform.scale(blankRender, (size, size))
 smile = pygame.image.load('Images/smile.jpg')
 smile = pygame.transform.scale(smile, (size, size))
 
 end = time()
-print('it too %s seconds to load the images'%str(end-start))
+# print('it too %s seconds to load the images'%str(end-start))

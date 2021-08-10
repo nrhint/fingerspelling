@@ -5,11 +5,12 @@
 
 class InputBox:
 
-    def __init__(self, x, y, w, h, pg, text=''):
+    def __init__(self, x, y, w, h, pg, bg_color, text=''):
+        self.background_colour = bg_color
         self.pg = pg
         self.COLOR_INACTIVE = pg.Color('lightskyblue3')
         self.COLOR_ACTIVE = pg.Color('dodgerblue2')
-        self.FONT = pg.font.Font(None, 32)
+        self.FONT = pg.font.Font(None, 50)
         self.rect = self.pg.Rect(x, y, w, h)
         self.color = self.COLOR_INACTIVE
         self.text = text
@@ -26,10 +27,9 @@ class InputBox:
                 self.active = False
             # Change the current color of the input box.
             self.color = self.COLOR_ACTIVE if self.active else self.COLOR_INACTIVE
-        if event.type == self.pg.KEYDOWN:
+        elif event.type == self.pg.KEYDOWN:
             if self.active:
                 if event.key == self.pg.K_RETURN:
-                    print(self.text)
                     word = self.text
                     self.reset()
                     return word
@@ -39,6 +39,8 @@ class InputBox:
                     self.text += event.unicode
                 # Re-render the text.
                 self.txt_surface = self.FONT.render(self.text, True, self.color)
+
+        # else:
     def reset(self):
         self.text = ''
         self.txt_surface = self.FONT.render(self.text, True, self.color)
@@ -50,6 +52,8 @@ class InputBox:
 
     def draw(self, screen):
         # Blit the text.
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+        screen.fill(self.background_colour, self.rect)
+
+        screen.blit(self.txt_surface, (self.rect.x+10, self.rect.y+10))
         # Blit the rect.
-        self.pg.draw.rect(screen, self.color, self.rect, 2)
+        self.pg.draw.rect(screen, self.color, self.rect, 5)

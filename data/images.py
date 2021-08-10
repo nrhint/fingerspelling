@@ -2,27 +2,27 @@
 ##This file should not be edited as it has information that if moved will make the program not function
 #5
 
-def run():
-    imageSets = []
-    
-     
-    
+from threading import Thread
+
+def run(imageSets):
     print('loading image set 1...')
     import data.images1
-    imageSets = data.images1.run(imageSets)
+    t1 = Thread(target=data.images1.run, args=(imageSets, ))
+    t1.start()
 
-    
     print('loading image set 2...')
     import data.images2
-    imageSets = data.images2.run(imageSets)
-    return imageSets
-    
+    t2 = Thread(target=data.images2.run, args=(imageSets, ))
+    t2.start()
+
     print('loading image set 3...')
     import data.images3
-    imageSets = data.images3.run(imageSets)
+    t3 = Thread(target=data.images3.run, args=(imageSets, ))
+    t3.start()
 
-    
     print('loading image set 4...')
     import data.images4
-    imageSets = data.images4.run(imageSets)
+    t4 = Thread(target=data.images4.run, args=(imageSets, ))
+    t4.start()
+    t1.join()
     return imageSets

@@ -20,7 +20,7 @@ def play(word, speed, surface, xPos, v):
     index = -1
     lastLetter = ''
     letter = word[index]
-    r = randint(0, 1)
+    r = randint(0, int(len(images)/2))
     if v:print(r)
     if v:looped = 0#Using for testing
     double = False

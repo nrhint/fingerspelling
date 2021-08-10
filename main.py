@@ -2,6 +2,13 @@
 ##This is a transition to using pygame for the main engine not tkinter.
 ##This main program should mostly be an empty shell that allows other files to do the background work.
 
+h = input('Height: ')
+if h == '':h = 600
+else:h = int(h)
+
+with open('size', 'w') as s:
+    s.write(str(h-50))
+
 import pygame
 from time import time, sleep
 from threading import Thread
@@ -35,7 +42,7 @@ class Game:
         #Load all the data
         #Pygame data:
         self.background_colour = (150, 150, 150)
-        (self.width, self.height) = (800, 600)
+        (self.width, self.height) = (int(h/0.75), int(h))
         if self.width > self.height:
             self.short = self.height-50
         else:
@@ -57,13 +64,14 @@ class Game:
         #Image data:
         self.blank = pygame.image.load('Images/blank.jpg')#Takes 0.17815
         self.blank = pygame.transform.scale(self.blank, (self.short, self.short))#takes 0.00352
-        print(self.short)
 
         #Dictionary:
         self.d = Dictionary(self.dictionary_path, False)
 
         #Setup the entry box
-        self.entry = InputBox(200, 550, 100, 50, pygame)
+        if self.v:print(self.width, self.height)
+        if self.v:print((self.width/2)-50, h-50, 100, 50)
+        self.entry = InputBox((self.width/2)-100, h-50, 100, 50, pygame, self.background_colour)
 
         self.run()
 
@@ -85,31 +93,30 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                if event.type == pygame.KEYUP:
-                    print('key lifted')
-                    if event.key == pygame.K_p:
-                        self.state = 'play_word'
                 word = self.entry.handle_event(event)
 
             if self.state == 'choose_new_word':
-                self.word = choice(self.d.words)
+                self.word = choice(self.d.words).lower()
                 self.state = 'play_word'
             elif self.state == 'play_word':
-                processThread = Thread(target=play, args=(self.word.lower(), self.play_speed, self.screen, self.imagex, self.v))  # <- note extra ','
+                processThread = Thread(target=play, args=(self.word.lower(), self.play_speed, self.screen, self.imagex, False))#Last of verbose
                 processThread.start()
 
                 # play(self.word, self.play_speed, self.screen, self.imagex, self.v)
                 self.state = 'wait_for_input'
             elif self.state == 'wait_for_input':
                 if word != None:
-                    print(word, self.word)
+                    if self.v:print(word, self.word)
                     if word == self.word:
                         self.state = 'choose_new_word'
+                    elif word == '':
+                        self.state = 'play_word'
                 sleep(0.05)
             else:
                 print("ERROR: State = %s"%self.state)
                 running = False
-            # self.entry.update()
+
+            self.entry.update()
             self.entry.draw(self.screen)
             pygame.display.flip()
         pygame.quit()
