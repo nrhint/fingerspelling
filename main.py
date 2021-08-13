@@ -114,21 +114,23 @@ class Game:
             elif self.state == 'wait_for_input':
                 if word != None:
                     if self.v:print(word, self.word)
-                    if word == self.word:#The input was correct:
+                    if word.lower() == self.word:#The input was correct:
                         self.play_speed += self.increase_rate
                         self.scoreCount.add(self.screen)
                         self.state = 'victory_screen'
                     elif word == '':
                         self.play_word()
-                        sleep(0.1)
+                        sleep(0.2)
                     else:
                         self.play_speed -= self.decrease_rate
                         self.scoreCount.subtract(self.screen)
+                        sleep(0.2)
                 sleep(0.05)
             elif self.state == 'victory_screen':
                 self.screen.blit(self.smile, (self.imagex, 0))
                 pygame.display.flip()
                 sleep(1)
+                self.state = 'choose_new_word'
             else:
                 print("ERROR: State = %s"%self.state)
                 running = False
@@ -144,7 +146,7 @@ class Game:
     #     self.updateScreen()
 
     def play_word(self):
-        processThread = Thread(target=play, args=(self.word.lower(), self.play_speed, self.screen, self.imagex, False))#Last of verbose
+        processThread = Thread(target=play, args=(self.word.lower(), self.play_speed, self.screen, self.imagex, True))#Last of verbose
         processThread.start()
 
 
