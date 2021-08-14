@@ -117,13 +117,17 @@ class Game:
                     if word.lower() == self.word:#The input was correct:
                         self.play_speed += self.increase_rate
                         self.scoreCount.add(self.screen)
+                        self.score_int += 1
                         self.state = 'victory_screen'
                     elif word == '':
                         self.play_word()
+                        self.play_speed -= self.decrease_rate
+                        # self.scoreCount.subtract(self.screen)
                         sleep(0.2)
                     else:
                         self.play_speed -= self.decrease_rate
                         self.scoreCount.subtract(self.screen)
+                        self.score_int -= 1
                         sleep(0.2)
                 sleep(0.05)
             elif self.state == 'victory_screen':
