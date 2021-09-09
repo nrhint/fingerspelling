@@ -1,7 +1,13 @@
-ToDo:
-Filter the dictionaries for any words that have more than 2 repeating letters.
+Plan:
+Make this into a training game.
 
-Features:
+ToDo:
+Make a main menu with different training options of:
+    Single word reception
+    Multiple words
+    Repeated word until correct
+
+Ideas:
 Make it so that you can choose a custom list of words
 Make the program track:
  - Frequency of missed words
@@ -13,3 +19,6 @@ allow the user to pick exactly how many letters to be in each word
 use the similarities between the missed words and try to make a training module that will train those commonly missed words and things
 make an option to randomly misspell words (Find a dictionary of common misspellings and add that to the list)
 speed (maybe add a function that common letter combos are faster than the rest)
+
+Done:
+Filter the dictionaries for any words that have more than 2 repeating letters.

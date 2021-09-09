@@ -49,22 +49,23 @@ def play(word, speed, surface, xPos, v):
             i = images[r][1][letters.index(letter)]
         else:
             i = images[r][0][letters.index(letter)]
-        rect = i.get_rect()
-        remainder = (startTime+(interval*(index+1))-time()) / 2
-        if v:print('Time left: %s'%remainder)
-        inter = remainder/17
-        x = 0
-        while time() < startTime+remainder+(interval*index):
-            if time() >= startTime+(interval*(index))+(inter*x) and x < 17:
-                print(time(), startTime+(interval*(index))+(inter*x))
-                x += 1
-                if v:print(x*15)
-                i.set_alpha(x*15)
-                surface.blit(i, (xPos, 0))
-                pygame.display.update(rect)
-        if x < 100:
-            i.set_alpha(150)
-            surface.blit(i, (xPos, 0))
+        # rect = i.get_rect()
+        # remainder = (startTime+(interval*(index+1))-time()) / 2
+        # if v:print('Time left: %s'%remainder)
+        # inter = remainder/17
+        # x = 0
+        # while time() < startTime+remainder+(interval*index):
+        #     if time() >= startTime+(interval*(index))+(inter*x) and x < 17:
+        #         print(time(), startTime+(interval*(index))+(inter*x))
+        #         x += 1
+        #         if v:print(x*15)
+        #         i.set_alpha(x*15)
+        #         surface.blit(i, (xPos, 0))
+        #         pygame.display.update(rect)
+        # if x < 100:
+        #     i.set_alpha(150)
+        #     surface.blit(i, (xPos, 0))
+        surface.blit(i, (xPos, 0))
         pygame.display.flip()
         if v:print('Removing lock...')
         lock.release()

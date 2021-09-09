@@ -2,13 +2,6 @@
 ##This is a transition to using pygame for the main engine not tkinter.
 ##This main program should mostly be an empty shell that allows other files to do the background work.
 
-h = input('Height: ')
-if h == '':h = 600
-else:h = int(h)
-
-with open('size', 'w') as s:
-    s.write(str(h-50))
-
 import pygame
 from time import time, sleep
 from threading import Thread
@@ -21,24 +14,17 @@ from random import choice
 class Game:
     def __init__(self):
         self.v = True
-        self.profile = input('Enter name or press enter to use default profile: ')
 
-        # load from file the configuration:
-        try:
-            with open('%s.cfg'%self.profile, 'r') as f:
-                file_data = f.read()
-                print('Welcome %s'%self.profile)
-        except FileNotFoundError:
-            print('using default profile')
-            with open('config.cfg', 'r') as f:
-                file_data = f.read()
+        if self.v:
+            h = 600
+        else:
+            h = input('Height: ')
+            if h == '': h = 600
+            else: h = int(h)
 
-        data = []
-        for line in file_data.split('\n'):
-            if line == '' or line[0] == '#':
-                pass
-            else:
-                data.append(line)
+        with open('size', 'w') as s:
+            s.write(str(h-50))
+
 
         #Load all the data
         #Pygame data:
@@ -57,12 +43,8 @@ class Game:
         pygame.display.flip()
 
         #User data:
-        self.play_speed = float(data[0]) #The score will change the programs attributes
-        self.increase_rate = float(data[1])
-        self.decrease_rate = float(data[2])
-        self.score_int = int(data[3])
-        self.dictionary_path = str(data[4])
-        
+        self.load_data()
+
         #Image data:
         self.smile = pygame.image.load('Images/smile.jpg')#Takes 0.17815
         self.smile = pygame.transform.scale(self.smile, (self.short, self.short))#takes 0.00352
@@ -77,11 +59,12 @@ class Game:
 
         #Setup the score:
         if self.v:print('starting the score counter...')
-        self.scoreCount = Score(self.width, self.height, pygame, str(self.score_int), self.background_colour, False)#Last is the debug var
+        self.scoreCount = Score(self.width, self.height, pygame, str(self.exp), self.background_colour, False)#Last is the debug var
 
         #Start the screen updating thread:
         # screen_update_thread = Thread(target=self.updateScreen, args=(self, ))
         # screen_update_thread.start()
+        self.lives = 5
 
         self.run()
 
@@ -90,19 +73,46 @@ class Game:
         file += str(self.play_speed) + '\n'
         file += str(self.increase_rate) + '\n'
         file += str(self.decrease_rate) + '\n'
-        file += str(self.score_int) + '\n'
+        file += str(self.exp) + '\n'
         file += str(self.dictionary_path)
 
         with open('%s.cfg'%self.profile, 'w') as f:
             f.write(file)
+    def load_data(self):
+        self.profile = input('Enter name or press enter to use default profile: ')
+
+        # load from file the configuration:
+        try:
+            with open('%s.cfg'%self.profile, 'r') as f:
+                file_data = f.read()
+                print('Welcome %s'%self.profile)
+        except FileNotFoundError:
+            print('using default profile')
+            with open('config.cfg', 'r') as f:
+                file_data = f.read()
+
+        data = []
+        for line in file_data.split('\n'):
+            if line == '' or line[0] == '#':
+                pass
+            else:
+                data.append(line)
+        ##Parse data
+        self.play_speed = float(data[0]) 
+        self.increase_rate = float(data[1])
+        self.decrease_rate = float(data[2])
+        self.exp = int(data[3])
+        self.dictionary_path = str(data[4])
+
 
     def run(self):
         running = True
         self.state = 'choose_new_word'
         while running:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or self.lives == 0:
                     running = False
+                    self.processThread.join()
                 word = self.entry.handle_event(event)
 
             if self.state == 'choose_new_word':
@@ -116,18 +126,20 @@ class Game:
                     if self.v:print(word, self.word)
                     if word.lower() == self.word:#The input was correct:
                         self.play_speed += self.increase_rate
-                        self.scoreCount.add(self.screen)
-                        self.score_int += 1
+                        self.scoreCount.add(self.screen, len(self.word))
+                        self.exp += len(self.word)
                         self.state = 'victory_screen'
                     elif word == '':
-                        self.play_word()
+                        # self.play_word()
                         self.play_speed -= self.decrease_rate
+                        self.state = 'choose_new_word'
                         # self.scoreCount.subtract(self.screen)
                         sleep(0.2)
                     else:
                         self.play_speed -= self.decrease_rate
-                        self.scoreCount.subtract(self.screen)
-                        self.score_int -= 1
+                        self.scoreCount.subtract(self.screen, len(self.word))
+                        self.lives -= 1
+                        self.state = 'choose_new_word'
                         sleep(0.2)
                 sleep(0.05)
             elif self.state == 'victory_screen':
@@ -150,8 +162,8 @@ class Game:
     #     self.updateScreen()
 
     def play_word(self):
-        processThread = Thread(target=play, args=(self.word.lower(), self.play_speed, self.screen, self.imagex, True))#Last of verbose
-        processThread.start()
+        self.processThread = Thread(target=play, args=(self.word.lower(), self.play_speed, self.screen, self.imagex, False))#Last of verbose
+        self.processThread.start()
 
 
 

@@ -50,7 +50,7 @@ class InputBox:
 
     def draw(self, screen):
         # Blit the text.
-        screen.fill(self.background_colour, self.rect)
+        screen.fill(self.background_colour, (self.rect.x, self.rect.y, self.rect.w+30, self.rect.h+15))
 
         if self.reset:
             screen.fill(self.background_colour, (self.rect.x, self.rect.y, self.rect.w+10, self.rect.h+10))
