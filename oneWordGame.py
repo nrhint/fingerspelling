@@ -110,7 +110,7 @@ class Game:
         self.state = 'choose_new_word'
         while running:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:# or self.lives == 0:
+                if event.type == pygame.QUIT or self.lives == 0:
                     running = False
                     self.processThread.join()
                 word = self.entry.handle_event(event)
@@ -131,7 +131,7 @@ class Game:
                         self.state = 'victory_screen'
                     elif word == '':
                         # self.play_word()
-                        self.play_speed -= self.decrease_rate * 2
+                        self.play_speed -= self.decrease_rate
                         self.state = 'choose_new_word'
                         # self.scoreCount.subtract(self.screen)
                         sleep(0.2)
@@ -169,4 +169,4 @@ class Game:
 
 main = Game()
 
-print('Finished')
+print('Finished one word game')
